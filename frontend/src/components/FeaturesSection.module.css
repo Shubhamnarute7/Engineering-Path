@@ -1,0 +1,10 @@
+.featuresSection { padding: 80px 0; background: rgba(255,255,255,0.15); border-top: 1px solid rgba(124, 58, 237, 0.08); border-bottom: 1px solid rgba(124, 58, 237, 0.08); position: relative; z-index: 5; }
+.featuresGrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+@media (max-width: 1024px) { .featuresGrid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 576px) { .featuresGrid { grid-template-columns: 1fr; } }
+
+.featureCard { background: var(--card-bg); border: 1px solid rgba(124, 58, 237, 0.12); border-radius: 18px; padding: 2rem; transition: border-color 0.3s, transform 0.3s; }
+.featureCard:hover { border-color: rgba(124, 58, 237, 0.28); transform: translateY(-4px); }
+.featureIcon { width: 48px; height: 48px; border-radius: 12px; background: rgba(124, 58, 237, 0.08); border: 1px solid rgba(124, 58, 237, 0.18); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; }
+.featureCard h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.8rem; }
+.featureCard p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.5; }

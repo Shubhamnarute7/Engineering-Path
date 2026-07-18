@@ -1,0 +1,387 @@
+.mentorSection {
+    padding: 100px 0;
+    background: transparent;
+    position: relative;
+    z-index: 5;
+}
+
+.mentorContainer {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+@media (max-width: 992px) {
+    .mentorContainer {
+        grid-template-columns: 1fr;
+    }
+}
+
+.mentorLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.mentorRight {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* ── Premium Glass Profile Card ── */
+.profileCard {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        0 15px 40px -10px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(124, 58, 237, 0.05),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+    border-radius: 28px;
+    padding: 3rem 2rem;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.profileCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+}
+
+.profileCard:hover {
+    transform: translateY(-6px);
+    box-shadow:
+        0 25px 50px -10px rgba(0, 0, 0, 0.5),
+        0 0 35px rgba(124, 58, 237, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    border-color: rgba(124, 58, 237, 0.35);
+}
+
+.avatarWrapper {
+    width: 170px;
+    height: 170px;
+    border-radius: 50%;
+    margin: 0 auto 1.75rem auto;
+    position: relative;
+    padding: 6px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent-emerald));
+    background-size: 200% 200%;
+    animation: rotateGradient 6s linear infinite;
+    box-shadow: 0 4px 20px rgba(124, 58, 237, 0.3);
+    transition: transform 0.4s ease;
+}
+
+.profileCard:hover .avatarWrapper {
+    transform: scale(1.04);
+}
+
+@keyframes rotateGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ffffff;
+}
+
+.mentorName {
+    font-size: 1.95rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    font-family: 'Outfit', sans-serif;
+    letter-spacing: -0.01em;
+    background: linear-gradient(135deg, #ffffff 60%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.mentorTitle {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.02em;
+}
+
+.mentorSubtitle {
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    margin-bottom: 1.5rem;
+}
+
+.tags {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.tag {
+    background: rgba(124, 58, 237, 0.06);
+    border: 1px solid rgba(124, 58, 237, 0.18);
+    color: var(--primary);
+    padding: 0.4rem 0.9rem;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.tag:hover {
+    background: rgba(124, 58, 237, 0.12);
+    border-color: rgba(124, 58, 237, 0.35);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.06);
+}
+
+/* ── Premium Glass Mission Card ── */
+.missionCard {
+    background: rgba(99, 102, 241, 0.04);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 24px;
+    padding: 2.25rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.015),
+        inset 0 1px 1px rgba(255, 255, 255, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.missionCard:hover {
+    border-color: rgba(99, 102, 241, 0.28);
+    background: rgba(99, 102, 241, 0.07);
+    transform: translateY(-4px);
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.03),
+        0 0 20px rgba(99, 102, 241, 0.03);
+}
+
+.cardIcon {
+    font-size: 2.25rem;
+    margin-bottom: 0.85rem;
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.2));
+    transition: transform 0.3s ease;
+}
+
+.missionCard:hover .cardIcon {
+    transform: scale(1.15) rotate(5deg);
+}
+
+.missionCard h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 0.85rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+.missionText {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.98rem;
+    line-height: 1.65;
+}
+
+/* ── Premium Glass Details Card ── */
+.detailsCard {
+    background: var(--card-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 2.25rem;
+    box-shadow:
+        0 15px 35px -5px rgba(0, 0, 0, 0.4),
+        inset 0 1px 1px rgba(255, 255, 255, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.detailsCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0) 100%);
+    z-index: 1;
+}
+
+.detailsCard:hover {
+    border-color: rgba(124, 58, 237, 0.35);
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-3px);
+    box-shadow:
+        0 20px 45px -5px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(124, 58, 237, 0.12);
+}
+
+.mini {
+    flex: 1;
+}
+
+.detailsHeading {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Outfit', sans-serif;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0.85rem;
+}
+
+/* ── Interactive Specialization Tokens ── */
+.specGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 0.85rem;
+}
+
+.specItem {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 0.85rem 1.1rem;
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.specItem::before {
+    content: "⚡";
+    color: #7c3aed;
+    font-size: 0.85rem;
+    text-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.specItem:hover {
+    background: rgba(124, 58, 237, 0.06);
+    border-color: rgba(124, 58, 237, 0.22);
+    color: var(--primary);
+    transform: translateX(4px);
+}
+
+.specItem:hover::before {
+    transform: scale(1.2) rotate(15deg);
+}
+
+/* ── List Elements Micro-Interactions ── */
+.achievementsList,
+.learnList,
+.mentorshipList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.achievementsList li,
+.learnList li,
+.mentorshipList li {
+    position: relative;
+    padding-left: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+}
+
+.achievementsList li:hover,
+.learnList li:hover,
+.mentorshipList li:hover {
+    color: var(--primary);
+    transform: translateX(5px);
+}
+
+.achievementsList li::before {
+    content: "★";
+    position: absolute;
+    left: 0;
+    color: var(--accent-amber);
+    font-size: 1.1rem;
+    filter: drop-shadow(0 0 4px rgba(217, 119, 6, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.learnList li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--accent-emerald);
+    font-weight: bold;
+    font-size: 1.2rem;
+    filter: drop-shadow(0 0 4px rgba(5, 150, 105, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.mentorshipList li::before {
+    content: "➔";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-size: 1rem;
+    filter: drop-shadow(0 0 4px rgba(124, 58, 237, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.achievementsList li:hover::before,
+.learnList li:hover::before,
+.mentorshipList li:hover::before {
+    transform: scale(1.2);
+}
+
+.dualGrid {
+    display: flex;
+    gap: 2rem;
+}
+
+@media (max-width: 600px) {
+    .dualGrid {
+        flex-direction: column;
+    }
+}
+
+/* ── Animation optimization classes ── */
+.headerReveal,
+.cardReveal {
+    will-change: transform, opacity;
+}

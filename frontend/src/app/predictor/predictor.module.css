@@ -1,0 +1,167 @@
+.wrapper { padding-top: 120px; padding-bottom: 4rem; min-height: 100vh; }
+.backBtn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; margin-bottom: 1.5rem; text-decoration: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+.backBtn:hover { color: var(--primary); transform: translateX(-4px); }
+
+.pageTitle { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #0f172a, #7c3aed, #4f46e5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+
+.dashboardGrid { display: grid; grid-template-columns: 400px 1fr; gap: 2rem; align-items: start; }
+@media (max-width: 1024px) { .dashboardGrid { grid-template-columns: 1fr; } }
+
+/* ── Form Card ── */
+.formCard { position: sticky; top: 100px; }
+.cardTitle { font-size: 1.2rem; font-weight: 700; color: #0f172a; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; font-family: 'Outfit', sans-serif; }
+
+.formGroup { margin-bottom: 1.2rem; }
+.formGroup label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.formGroup select, .formGroup input[type="text"], .formGroup input[type="number"], .formGroup input[type="email"], .formGroup input[type="tel"] { width: 100%; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(4px); border: 1px solid rgba(124, 58, 237, 0.15); border-radius: 10px; color: var(--text-main); font-family: inherit; outline: none; font-size: 0.95rem; transition: border-color 0.3s, background-color 0.3s; }
+.formGroup select:focus, .formGroup input:focus { border-color: var(--primary); background: rgba(255, 255, 255, 0.95); }
+.formGroup select option { background: #ffffff; color: var(--text-main); }
+
+.sliderGroup { display: flex; align-items: center; gap: 1.2rem; }
+.sliderGroup input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(124, 58, 237, 0.1);
+  outline: none;
+  transition: background 0.3s;
+}
+.sliderGroup input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.15s;
+}
+.sliderGroup input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: #a78bfa;
+}
+.sliderGroup input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary-glow);
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s, background-color 0.15s;
+}
+.sliderGroup input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.25);
+  background: #a78bfa;
+}
+.numInput { width: 85px !important; text-align: center; }
+
+.checkboxGrid { display: flex; gap: 1rem; flex-wrap: wrap; }
+.checkboxItem {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(124, 58, 237, 0.08);
+  padding: 0.55rem 1.1rem;
+  border-radius: 10px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.checkboxItem:hover {
+  background: rgba(124, 58, 237, 0.05);
+  border-color: rgba(124, 58, 237, 0.2);
+}
+.checkboxItem:has(input[type="checkbox"]:checked) {
+  background: rgba(124, 58, 237, 0.08);
+  border-color: rgba(124, 58, 237, 0.25);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.06);
+}
+.checkboxItem input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+
+.predictBtn { width: 100%; padding: 0.85rem; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: #fff; font-weight: 700; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(139,92,246,0.3); transition: transform 0.2s, box-shadow 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.predictBtn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(139,92,246,0.45); }
+.predictBtn:disabled { opacity: 0.7; cursor: wait; }
+
+.errorMsg { color: #ef4444; margin-top: 0.75rem; font-size: 0.9rem; text-align: center; }
+
+/* ── Results ── */
+.resultsContainer { min-height: 400px; }
+.placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4rem 2rem; gap: 1rem; color: var(--text-muted); min-height: 400px; background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(124, 58, 237, 0.12); }
+.placeholder h3 { color: var(--text-main); font-size: 1.3rem; font-weight: 700; }
+.placeholder p { max-width: 400px; font-size: 0.95rem; line-height: 1.5; }
+
+.resultsContent { display: flex; flex-direction: column; gap: 2rem; }
+
+/* ── Rank Banner ── */
+.rankBanner { display: flex; align-items: center; gap: 2rem; }
+@media (max-width: 768px) { .rankBanner { flex-direction: column; text-align: center; } }
+
+.rankCircleContainer { flex-shrink: 0; }
+.rankCircle { width: 140px; height: 140px; border-radius: 50%; background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(79, 70, 229, 0.06)); border: 2px solid rgba(124, 58, 237, 0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; animation: pulse-glow 2s ease-in-out infinite alternate; }
+.rankLabel { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.1em; font-weight: 700; }
+.rankValue { font-size: 1.6rem; font-weight: 800; color: var(--primary); font-family: 'Outfit', sans-serif; }
+.rankSuffix { font-size: 0.7rem; color: var(--text-muted); }
+
+.rankInfo h3 { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; }
+.rankInfo p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+
+/* ── Ranges ── */
+.rangesGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+@media (max-width: 768px) { .rangesGrid { grid-template-columns: 1fr; } }
+.rangeCard { border-radius: 16px; padding: 1.2rem 1.5rem; border: 1px solid transparent; }
+.rangeCard.safe { background: rgba(5, 150, 105, 0.06); border-color: rgba(5, 150, 105, 0.18); }
+.rangeCard.moderate { background: rgba(217, 119, 6, 0.06); border-color: rgba(217, 119, 6, 0.18); }
+.rangeCard.dream { background: rgba(79, 70, 229, 0.06); border-color: rgba(79, 70, 229, 0.18); }
+.rangeTitle { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.3rem; }
+.safe .rangeTitle { color: var(--accent-emerald); }
+.moderate .rangeTitle { color: var(--accent-amber); }
+.dream .rangeTitle { color: var(--secondary); }
+.rangePct { font-size: 1.3rem; font-weight: 800; color: var(--text-main); font-family: 'Outfit', sans-serif; }
+.rangeRanks { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+/* ── Recommendations ── */
+.recsGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1rem; margin-top: 1rem; }
+.recsCard { background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(124, 58, 237, 0.12); border-radius: 16px; padding: 1.2rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between; gap: 0.8rem; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(10px); }
+.recsCard:hover { border-color: rgba(124, 58, 237, 0.28); background: rgba(255, 255, 255, 0.65); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.03); }
+.recsHeader { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+.collegeName { font-size: 1rem; font-weight: 700; color: var(--text-main); }
+.recsBadge { padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+.badgeSafe { background: rgba(5, 150, 105, 0.12); color: var(--accent-emerald); border: 1px solid rgba(5, 150, 105, 0.2); }
+.badgeModerate { background: rgba(217, 119, 6, 0.12); color: var(--accent-amber); border: 1px solid rgba(217, 119, 6, 0.2); }
+.badgeDream { background: rgba(79, 70, 229, 0.12); color: var(--secondary); border: 1px solid rgba(79, 70, 229, 0.2); }
+.collegeMeta { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+.recsFooter { display: flex; justify-content: space-between; border-top: 1px solid rgba(124, 58, 237, 0.08); padding-top: 0.8rem; margin-top: auto; }
+.recsStat { display: flex; flex-direction: column; }
+.statLabel { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; }
+.statValue { font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-top: 0.1rem; }
+
+/* ── Table ── */
+.tableContainer { overflow-x: auto; margin-top: 0.5rem; border-radius: 12px; border: 1px solid rgba(124, 58, 237, 0.12); }
+.tableContainer table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; background: rgba(255, 255, 255, 0.35); }
+.tableContainer th { background: rgba(255, 255, 255, 0.5); color: var(--text-muted); font-weight: 600; padding: 0.8rem 1rem; border-bottom: 1px solid rgba(124, 58, 237, 0.12); }
+.tableContainer td { padding: 0.8rem 1rem; border-bottom: 1px solid rgba(124, 58, 237, 0.08); color: var(--text-main); }
+.tableContainer tr:last-child td { border-bottom: none; }
+.tableContainer tr:hover td { background: rgba(124, 58, 237, 0.03); }
+
+/* ── Sub Badges ── */
+.badgeSub { padding: 0.1rem 0.4rem; font-size: 0.7rem; border-radius: 4px; font-weight: 500; margin-right: 0.25rem; }
+.ewsBadge { background: rgba(124, 58, 237, 0.12); color: var(--primary); border: 1px solid rgba(124, 58, 237, 0.22); }
+.tfwsBadge { background: rgba(79, 70, 229, 0.12); color: var(--secondary); border: 1px solid rgba(79, 70, 229, 0.22); }
+.pwdBadge { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.22); }
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 15px rgba(124, 58, 237, 0.08);
+    border-color: rgba(124, 58, 237, 0.18);
+  }
+  100% {
+    box-shadow: 0 0 35px rgba(124, 58, 237, 0.28);
+    border-color: rgba(124, 58, 237, 0.45);
+  }
+}

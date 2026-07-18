@@ -1,0 +1,239 @@
+.coursesSection {
+  padding: 6rem 0;
+  position: relative;
+  z-index: 5;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.coursesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+  .coursesGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .coursesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.courseCard {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.courseCard:hover {
+  border-color: rgba(124, 58, 237, 0.35);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(124, 58, 237, 0.15);
+}
+
+.courseHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.durationBadge {
+  align-self: flex-start;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+  padding: 0.3rem 0.8rem;
+  border-radius: 50px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.courseTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.3;
+}
+
+.levelBadge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.courseBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex-grow: 1;
+}
+
+.tutorBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.tutorAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--primary);
+  object-fit: cover;
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+
+.learnList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.learnList li {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  line-height: 1.4;
+}
+
+.learnList li svg {
+  color: var(--primary);
+  margin-top: 0.1rem;
+}
+
+.projectsSection {
+  margin-top: 1rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-top: 0.75rem;
+}
+
+.projectsLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-amber);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.projectsList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-left: 0;
+}
+
+.projectsList li {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.projectDot {
+  color: var(--accent-amber);
+  font-size: 0.6rem;
+}
+
+.outcomeBox {
+  background: rgba(16, 185, 129, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  color: #34d399;
+  line-height: 1.5;
+  margin-top: 0.5rem;
+}
+
+.outcomeBox strong {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.courseFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.25rem;
+  margin-top: auto;
+}
+
+.price {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--primary);
+  font-family: 'Outfit', sans-serif;
+}
+
+.enrollBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.enrollBtn:hover {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+  transform: translateY(-1px);
+  color: #ffffff;
+}

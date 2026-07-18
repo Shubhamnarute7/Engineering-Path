@@ -1,0 +1,789 @@
+.clientLayout {
+  display: flex;
+  min-height: 100vh;
+  background: #030014;
+  color: #ffffff;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: 280px;
+  background: rgba(8, 9, 20, 0.7);
+  backdrop-filter: blur(25px);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  transition: transform 0.3s ease;
+}
+
+.sidebarHeader {
+  padding: 2rem 1.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebarLogoText {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 40%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebarMenu {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.menuItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+}
+
+.activeItem {
+  background: rgba(124, 58, 237, 0.08) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(124, 58, 237, 0.15);
+}
+
+.menuItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.menuIcon {
+  width: 18px;
+  height: 18px;
+}
+
+.itemBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
+
+.activeItem .itemBadge {
+  background: rgba(124, 58, 237, 0.2);
+  color: #c084fc;
+}
+
+.sidebarFooter {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.clientProfileInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.2);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.clientMeta h5 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.clientMeta span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.logoutBtn {
+  background: transparent;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background 0.2s;
+  display: flex;
+}
+
+.logoutBtn:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* Main Panel Styling */
+.mainPanel {
+  flex-grow: 1;
+  margin-left: 280px;
+  min-height: 100vh;
+  padding: 2.25rem 2.5rem;
+  background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.05) 0%, transparent 40%);
+}
+
+.mainHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.mobileHeaderRow {
+  display: none;
+}
+
+.pageTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.dateRange {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+}
+
+/* Dashboard Overview Cards */
+.servicesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.serviceCard {
+  background: rgba(10, 11, 25, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.serviceGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.serviceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.serviceBadge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.65rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+}
+
+.serviceTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+.priceTag {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.priceTag strong {
+  color: #ffffff;
+}
+
+/* Project Progress Timeline */
+.timelineCard {
+  background: rgba(10, 11, 25, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.timelineTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.75rem;
+}
+
+.progressBarTrack {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 10px;
+}
+
+.stepsRow {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stepNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  width: 120px;
+}
+
+.nodeCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(8, 9, 20, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s;
+}
+
+.nodeActive .nodeCircle {
+  border-color: var(--primary);
+  background: rgba(124, 58, 237, 0.2);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+}
+
+.nodeComplete .nodeCircle {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.2);
+  color: #34d399;
+}
+
+.nodeLabel {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.nodeActive .nodeLabel {
+  color: #ffffff;
+}
+
+.nodeComplete .nodeLabel {
+  color: #34d399;
+}
+
+/* Requirements & Deliverables Files Lists */
+.fileCard {
+  background: rgba(10, 11, 25, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  transition: all 0.3s;
+}
+
+.fileItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.fileMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  overflow: hidden;
+}
+
+.fileMeta svg {
+  width: 20px;
+  height: 20px;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.fileName {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileSize {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.dlBtn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.dlBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Billing & Invoices Table */
+.tableCard {
+  background: rgba(10, 11, 25, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+}
+
+.tableTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+}
+
+.adminTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.adminTable th {
+  padding: 0.85rem 1rem;
+  color: var(--text-muted);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.adminTable td {
+  padding: 1rem;
+  color: var(--text-main);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Status badging */
+.statusPill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.statusPaid,
+.statusOpen {
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  color: #34d399;
+}
+
+.statusPending,
+.statusProgress {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+}
+
+.statusClosed {
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  color: #f87171;
+}
+
+/* Support Tickets Form */
+.formGroup {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 0.7rem 1rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.formGroup input:focus,
+.formGroup select:focus,
+.formGroup textarea:focus {
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.formGroup textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.submitBtn {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #ffffff;
+  border: none;
+  padding: 0.75rem 1.75rem;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+  transition: transform 0.2s;
+  align-self: flex-start;
+}
+
+.submitBtn:hover {
+  transform: translateY(-1px);
+}
+
+/* Interactive Team Chat Panel */
+.chatContainer {
+  height: 480px;
+  background: rgba(10, 11, 25, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatHeader {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.chatHeader h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.15rem 0;
+}
+
+.chatHeader span {
+  font-size: 0.75rem;
+  color: #34d399;
+}
+
+.messagesList {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.messagesList::-webkit-scrollbar {
+  width: 4px;
+}
+.messagesList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+}
+
+.msgRow {
+  display: flex;
+  width: 100%;
+}
+
+.msgRowClient {
+  justify-content: flex-end;
+}
+
+.msgRowTeam {
+  justify-content: flex-start;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 0.85rem 1.15rem;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.bubbleClient {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.bubbleTeam {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  border-bottom-left-radius: 4px;
+}
+
+.msgMeta {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+  display: block;
+}
+
+.msgRowClient .msgMeta {
+  text-align: right;
+}
+
+.chatInputArea {
+  padding: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.01);
+  display: flex;
+  gap: 0.75rem;
+}
+
+.chatInput {
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.chatInput:focus {
+  border-color: var(--primary);
+}
+
+.sendBtn {
+  background: var(--primary);
+  border: none;
+  color: #fff;
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.sendBtn:hover {
+  background: #8b5cf6;
+}
+
+/* File Upload drag area styling */
+.uploadZone {
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.01);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.uploadZone:hover {
+  border-color: var(--primary);
+  background: rgba(124, 58, 237, 0.02);
+}
+
+.uploadIcon {
+  width: 32px;
+  height: 32px;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.uploadText {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* Mobile Toggles */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+  
+  .mainPanel {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+
+  .mainHeader {
+    display: none;
+  }
+
+  .mobileHeaderRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .menuBtn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1.75rem;
+    padding: 0.25rem;
+    line-height: 1;
+  }
+  
+  .servicesGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .stepsRow {
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding-left: 1rem;
+  }
+  
+  .progressBarTrack {
+    display: none;
+  }
+  
+  .stepNode {
+    flex-direction: row;
+    text-align: left;
+    width: auto;
+    gap: 1rem;
+  }
+  
+  .nodeCircle {
+    margin-bottom: 0;
+  }
+  
+  .bubble {
+    max-width: 90%;
+  }
+}

@@ -1,0 +1,64 @@
+.trusted {
+  padding: 3rem 0;
+  background: rgba(3, 0, 20, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  position: relative;
+  z-index: 10;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.logoItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.4);
+  transition: color 0.3s ease, transform 0.3s ease;
+  cursor: default;
+}
+
+.logoItem:hover {
+  color: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.4));
+}
+
+.collegeIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 768px) {
+  .logos {
+    gap: 1.75rem;
+  }
+  .name {
+    font-size: 0.9rem;
+  }
+}

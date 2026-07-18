@@ -1,0 +1,125 @@
+.failurePage {
+  padding-top: 140px;
+  padding-bottom: 6rem;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% -20%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
+              radial-gradient(circle at 90% 60%, rgba(139, 92, 246, 0.04) 0%, transparent 60%);
+}
+
+.failureCard {
+  width: 100%;
+  max-width: 500px;
+  padding: 3.5rem 2.5rem !important;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  text-align: center;
+}
+
+.iconCircle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.1);
+  border: 2px solid rgba(239, 68, 68, 0.35);
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem auto;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
+.failureTitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #ffffff 40%, #fca5a5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.failureDesc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 2rem;
+}
+
+.errorCard {
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.errorRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.errorRow:last-child {
+  border-bottom: none;
+}
+
+.errorLabel {
+  color: var(--text-muted);
+}
+
+.errorValue {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.actionRow {
+  display: flex;
+  gap: 1rem;
+}
+
+.primaryBtn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #ffffff;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.primaryBtn:hover {
+  transform: translateY(-1px);
+}
+
+.secondaryBtn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  padding: 0.8rem;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.secondaryBtn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
