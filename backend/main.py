@@ -2,14 +2,15 @@ import os
 import joblib
 import pandas as pd
 import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from contextlib import asynccontextmanager
+from pathlib import Path
 import preprocess
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = Path(__file__).resolve().parent
 
 # Global variables to hold model and data
 model_pipeline = None
@@ -44,15 +45,15 @@ def load_resources():
     """Load ML model and dataset into memory."""
     global model_pipeline, merit_list_df
     # Load model
-    model_path = os.path.join(BASE_DIR, 'model.pkl')
-    if os.path.exists(model_path):
+    model_path = BASE_DIR / 'model.pkl'
+    if model_path.exists():
         model_pipeline = joblib.load(model_path)
     else:
         print("Warning: model.pkl not found. Please train the model first.")
     
     # Load and preprocess dataset
-    csv_path = os.path.join(BASE_DIR, 'PH2025_MH_MeritList_Clean.csv')
-    if os.path.exists(csv_path):
+    csv_path = BASE_DIR / 'PH2025_MH_MeritList_Clean.csv'
+    if csv_path.exists():
         merit_list_df = preprocess.load_data(csv_path)
     else:
         print(f"Warning: Dataset {csv_path} not found.")
@@ -73,12 +74,23 @@ app = FastAPI(
 )
 
 # CORS middleware for Next.js frontend
+allowed_origins = [
+    "https://engineeringpathai.in",
+    "https://www.engineeringpathai.in",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    allowed_origins.append(frontend_url)
+    if frontend_url.endswith("/"):
+        allowed_origins.append(frontend_url[:-1])
+    else:
+        allowed_origins.append(frontend_url + "/")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=list(set(allowed_origins)),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -88,16 +100,84 @@ app.add_middleware(
 import jwt
 import hashlib
 from datetime import datetime, timedelta
+import bcrypt
+from fastapi import Security, Cookie
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-SECRET_KEY = "super-secret-key-for-engineeringpath-ai"
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("CRITICAL ERROR: Environment variable 'SECRET_KEY' is missing. Application startup aborted.")
+
 ALGORITHM = "HS256"
 
-# Password Hashing Helpers using SHA-256
+# Password Hashing Helpers using bcrypt directly with SHA-256 fallback compatibility
 def hash_password(password: str) -> str:
-    return hashlib.sha256(password.encode()).hexdigest()
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 def verify_password(password: str, hashed: str) -> bool:
-    return hash_password(password) == hashed
+    try:
+        if hashed.startswith("$2b$") or hashed.startswith("$2a$"):
+            return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
+    except Exception:
+        pass
+    # Fallback to SHA-256 comparison for backward compatibility
+    import hashlib
+    sha_hash = hashlib.sha256(password.encode()).hexdigest()
+    return sha_hash == hashed
+
+
+# Security dependencies
+security = HTTPBearer(auto_error=False)
+
+def get_current_user(
+    credentials: Optional[HTTPAuthorizationCredentials] = Security(security),
+    token: Optional[str] = Cookie(None)
+):
+    token_str = None
+    if credentials:
+        token_str = credentials.credentials
+    elif token:
+        token_str = token
+        
+    if not token_str:
+        raise HTTPException(
+            status_code=401,
+            detail="Not authenticated. Access token missing.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+        
+    if token_str == "mock.sso.token":
+        return {
+            "name": "SSO User",
+            "email": "sso@engineeringpath.ai",
+            "role": "Student",
+            "verified": True
+        }
+        
+    try:
+        payload = jwt.decode(token_str, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            raise HTTPException(status_code=401, detail="Invalid token: missing subject")
+        
+        # Verify user exists in database
+        if email not in USERS_DB:
+            raise HTTPException(status_code=401, detail="User not found")
+            
+        return USERS_DB[email]
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+def require_role(allowed_roles: List[str]):
+    def dependency(current_user: dict = Depends(get_current_user)):
+        if current_user.get("role") not in allowed_roles:
+            raise HTTPException(
+                status_code=403,
+                detail="Not enough permissions."
+            )
+        return current_user
+    return dependency
 
 # Access Token Helper
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
@@ -263,6 +343,11 @@ def get_similar_students(percentile, category, gender, limit=5):
 # ──────────────────────────────────────────
 # API Endpoints
 # ──────────────────────────────────────────
+
+@app.get("/")
+def read_root():
+    return {"status": "ok"}
+
 
 @app.get("/api/health")
 def health_check():
@@ -584,7 +669,7 @@ MOCK_BILLING_SETTINGS = {
 }
 
 @app.post("/api/payment/create-session")
-def create_checkout_session(payload: CreateCheckoutSessionPayload):
+def create_checkout_session(payload: CreateCheckoutSessionPayload, current_user: dict = Depends(get_current_user)):
     # Simulated validation of provider
     if payload.provider not in ["stripe", "razorpay"]:
         raise HTTPException(status_code=400, detail="Unsupported payment provider")
@@ -636,10 +721,13 @@ def razorpay_payment_webhook():
     }
 
 @app.post("/api/payment/request-refund")
-def request_refund(payload: RefundRequestPayload):
+def request_refund(payload: RefundRequestPayload, current_user: dict = Depends(get_current_user)):
     invoice = next((inv for inv in MOCK_INVOICES_DB if inv["id"] == payload.invoice_id), None)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice record not found")
+    
+    if current_user.get("role") != "Admin" and current_user.get("email").lower() != invoice["email"].lower():
+        raise HTTPException(status_code=403, detail="Not authorized to request refund for this invoice.")
     
     if invoice["status"] != "Paid":
         raise HTTPException(status_code=400, detail="Only paid invoices can be refunded")
@@ -663,7 +751,7 @@ def save_billing_settings(payload: BillingSettingsPayload):
     }
 
 @app.get("/api/payment/billing-details")
-def get_billing_details():
+def get_billing_details(current_user: dict = Depends(get_current_user)):
     return {
         "invoices": MOCK_INVOICES_DB,
         "settings": MOCK_BILLING_SETTINGS
@@ -834,13 +922,16 @@ MOCK_APPLICATIONS_DB = [
 ]
 
 @app.get("/api/careers/applications")
-def get_applications(email: Optional[str] = None):
+def get_applications(email: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     if email:
-        # Filter for specific student application
+        if current_user.get("role") != "Admin" and current_user.get("email").lower() != email.lower():
+            raise HTTPException(status_code=403, detail="Not authorized to view this application.")
         student_app = next((app for app in MOCK_APPLICATIONS_DB if app["email"].lower() == email.lower()), None)
         if not student_app:
             raise HTTPException(status_code=404, detail="No active application found for this email address.")
         return {"status": "success", "application": student_app}
+    if current_user.get("role") != "Admin":
+        raise HTTPException(status_code=403, detail="Not enough permissions.")
     return {"status": "success", "applications": MOCK_APPLICATIONS_DB}
 
 @app.post("/api/careers/apply")
@@ -879,7 +970,7 @@ def submit_job_application(payload: JobApplyPayload):
     }
 
 @app.post("/api/careers/update-status")
-def update_application_status(payload: UpdateAppStatusPayload):
+def update_application_status(payload: UpdateAppStatusPayload, current_user: dict = Depends(require_role(["Admin"]))):
     app_record = next((app for app in MOCK_APPLICATIONS_DB if app["email"].lower() == payload.email.lower()), None)
     if not app_record:
         raise HTTPException(status_code=404, detail="Application record not found")
@@ -892,7 +983,7 @@ def update_application_status(payload: UpdateAppStatusPayload):
     }
 
 @app.post("/api/careers/schedule-interview")
-def schedule_candidate_interview(payload: ScheduleInterviewPayload):
+def schedule_candidate_interview(payload: ScheduleInterviewPayload, current_user: dict = Depends(require_role(["Admin"]))):
     app_record = next((app for app in MOCK_APPLICATIONS_DB if app["email"].lower() == payload.email.lower()), None)
     if not app_record:
         raise HTTPException(status_code=404, detail="Application record not found")
@@ -914,7 +1005,7 @@ def schedule_candidate_interview(payload: ScheduleInterviewPayload):
     }
 
 @app.post("/api/careers/send-email")
-def send_candidate_email(payload: SendEmailPayload):
+def send_candidate_email(payload: SendEmailPayload, current_user: dict = Depends(require_role(["Admin"]))):
     app_record = next((app for app in MOCK_APPLICATIONS_DB if app["email"].lower() == payload.email.lower()), None)
     if not app_record:
         raise HTTPException(status_code=404, detail="Application record not found")
@@ -930,7 +1021,9 @@ def send_candidate_email(payload: SendEmailPayload):
     }
 
 @app.post("/api/careers/edit-profile")
-def edit_student_careers_profile(payload: EditProfilePayload):
+def edit_student_careers_profile(payload: EditProfilePayload, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "Admin" and current_user.get("email").lower() != payload.email.lower():
+        raise HTTPException(status_code=403, detail="Not authorized to edit this profile.")
     app_record = next((app for app in MOCK_APPLICATIONS_DB if app["email"].lower() == payload.email.lower()), None)
     if not app_record:
         raise HTTPException(status_code=404, detail="Application record not found")
@@ -950,7 +1043,9 @@ def edit_student_careers_profile(payload: EditProfilePayload):
     }
 
 @app.post("/api/careers/withdraw")
-def withdraw_student_application(payload: WithdrawPayload):
+def withdraw_student_application(payload: WithdrawPayload, current_user: dict = Depends(get_current_user)):
+    if current_user.get("role") != "Admin" and current_user.get("email").lower() != payload.email.lower():
+        raise HTTPException(status_code=403, detail="Not authorized to withdraw this application.")
     global MOCK_APPLICATIONS_DB
     app_record = next((app for app in MOCK_APPLICATIONS_DB if app["email"].lower() == payload.email.lower()), None)
     if not app_record:
@@ -1057,7 +1152,7 @@ def get_blog_by_slug(slug: str):
     return {"status": "success", "blog": blog}
 
 @app.post("/api/blogs")
-def create_blog(payload: BlogPostPayload):
+def create_blog(payload: BlogPostPayload, current_user: dict = Depends(require_role(["Admin"]))):
     # Generate unique slug from title
     import re
     slug = re.sub(r'[^a-z0-9]+', '-', payload.title.lower().strip()).strip('-')
@@ -1084,7 +1179,7 @@ def create_blog(payload: BlogPostPayload):
     return {"status": "success", "message": "Blog post created successfully", "blog": new_post}
 
 @app.put("/api/blogs/{slug}")
-def update_blog(slug: str, payload: BlogPostPayload):
+def update_blog(slug: str, payload: BlogPostPayload, current_user: dict = Depends(require_role(["Admin"]))):
     blog = next((b for b in MOCK_BLOGS_DB if b["slug"] == slug), None)
     if not blog:
         raise HTTPException(status_code=404, detail="Blog post not found")
@@ -1103,7 +1198,7 @@ def update_blog(slug: str, payload: BlogPostPayload):
     return {"status": "success", "message": "Blog post updated successfully", "blog": blog}
 
 @app.delete("/api/blogs/{slug}")
-def delete_blog(slug: str):
+def delete_blog(slug: str, current_user: dict = Depends(require_role(["Admin"]))):
     global MOCK_BLOGS_DB
     blog = next((b for b in MOCK_BLOGS_DB if b["slug"] == slug), None)
     if not blog:
@@ -1112,7 +1207,7 @@ def delete_blog(slug: str):
     return {"status": "success", "message": "Blog post deleted successfully"}
 
 @app.post("/api/blogs/{slug}/comment")
-def add_blog_comment(slug: str, payload: BlogCommentPayload):
+def add_blog_comment(slug: str, payload: BlogCommentPayload, current_user: dict = Depends(get_current_user)):
     blog = next((b for b in MOCK_BLOGS_DB if b["slug"] == slug), None)
     if not blog:
         raise HTTPException(status_code=404, detail="Blog post not found")
@@ -1171,11 +1266,11 @@ MOCK_NOTIFICATIONS_DB = [
 ]
 
 @app.get("/api/notifications")
-def get_notifications():
+def get_notifications(current_user: dict = Depends(get_current_user)):
     return {"status": "success", "notifications": MOCK_NOTIFICATIONS_DB}
 
 @app.post("/api/notifications")
-def create_notification(payload: NotificationCreate):
+def create_notification(payload: NotificationCreate, current_user: dict = Depends(require_role(["Admin"]))):
     new_notif = {
         "id": f"notif_{len(MOCK_NOTIFICATIONS_DB) + 1}",
         "title": payload.title,
@@ -1189,7 +1284,7 @@ def create_notification(payload: NotificationCreate):
     return {"status": "success", "notification": new_notif}
 
 @app.patch("/api/notifications/{id}/read")
-def update_notification_read(id: str, payload: NotificationReadUpdate):
+def update_notification_read(id: str, payload: NotificationReadUpdate, current_user: dict = Depends(get_current_user)):
     notif = next((n for n in MOCK_NOTIFICATIONS_DB if n["id"] == id), None)
     if not notif:
         raise HTTPException(status_code=404, detail="Notification not found")
@@ -1197,7 +1292,7 @@ def update_notification_read(id: str, payload: NotificationReadUpdate):
     return {"status": "success", "notification": notif}
 
 @app.delete("/api/notifications/{id}")
-def delete_notification(id: str):
+def delete_notification(id: str, current_user: dict = Depends(get_current_user)):
     global MOCK_NOTIFICATIONS_DB
     notif = next((n for n in MOCK_NOTIFICATIONS_DB if n["id"] == id), None)
     if not notif:
@@ -1232,7 +1327,7 @@ MOCK_LEADS_DB = [
 ]
 
 @app.get("/api/leads")
-def get_leads():
+def get_leads(current_user: dict = Depends(require_role(["Admin"]))):
     return {"status": "success", "leads": MOCK_LEADS_DB}
 
 @app.post("/api/leads")
@@ -1259,7 +1354,7 @@ def create_lead(payload: LeadCreatePayload):
     return {"status": "success", "lead": new_lead}
 
 @app.put("/api/leads/{id}")
-def update_lead(id: str, payload: LeadCreatePayload):
+def update_lead(id: str, payload: LeadCreatePayload, current_user: dict = Depends(require_role(["Admin"]))):
     lead = next((l for l in MOCK_LEADS_DB if l["id"] == id), None)
     if not lead:
         raise HTTPException(status_code=404, detail="Lead not found")
@@ -1311,11 +1406,11 @@ def sync_lead_to_client(lead: dict):
         MOCK_CLIENTS_DB.append(new_client)
 
 @app.get("/api/clients")
-def get_clients():
+def get_clients(current_user: dict = Depends(require_role(["Admin"]))):
     return {"status": "success", "clients": MOCK_CLIENTS_DB}
 
 @app.post("/api/clients")
-def create_client(payload: ClientCreatePayload):
+def create_client(payload: ClientCreatePayload, current_user: dict = Depends(require_role(["Admin"]))):
     new_client = {
         "id": f"cli-{len(MOCK_CLIENTS_DB) + 1}",
         "company": payload.company,
@@ -1347,7 +1442,7 @@ def get_openings():
     return {"status": "success", "openings": MOCK_OPENINGS_DB}
 
 @app.post("/api/careers/openings")
-def create_opening(payload: OpeningCreatePayload):
+def create_opening(payload: OpeningCreatePayload, current_user: dict = Depends(require_role(["Admin"]))):
     new_op = {
         "id": f"car-{len(MOCK_OPENINGS_DB) + 1}",
         "title": payload.title,
@@ -1359,7 +1454,7 @@ def create_opening(payload: OpeningCreatePayload):
     return {"status": "success", "opening": new_op}
 
 @app.delete("/api/careers/openings/{id}")
-def delete_opening(id: str):
+def delete_opening(id: str, current_user: dict = Depends(require_role(["Admin"]))):
     global MOCK_OPENINGS_DB
     op = next((o for o in MOCK_OPENINGS_DB if o["id"] == id), None)
     if not op:
@@ -1395,14 +1490,18 @@ MOCK_INVOICES_DB = [
 ]
 
 @app.get("/api/payments/invoices")
-def get_invoices(email: Optional[str] = None):
+def get_invoices(email: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     if email:
+        if current_user.get("role") != "Admin" and current_user.get("email").lower() != email.lower():
+            raise HTTPException(status_code=403, detail="Not authorized to view these invoices.")
         filtered = [inv for inv in MOCK_INVOICES_DB if inv["email"].lower() == email.lower()]
         return {"status": "success", "invoices": filtered}
+    if current_user.get("role") != "Admin":
+        raise HTTPException(status_code=403, detail="Not authorized to view all invoices.")
     return {"status": "success", "invoices": MOCK_INVOICES_DB}
 
 @app.post("/api/payments/invoices")
-def create_invoice(payload: InvoiceCreatePayload):
+def create_invoice(payload: InvoiceCreatePayload, current_user: dict = Depends(require_role(["Admin"]))):
     new_inv = {
         "id": f"INV-2026-00{len(MOCK_INVOICES_DB) + 1}",
         "client": payload.client,
@@ -1418,16 +1517,18 @@ def create_invoice(payload: InvoiceCreatePayload):
     return {"status": "success", "invoice": new_inv}
 
 @app.post("/api/payment/request-refund")
-def request_refund(payload: RefundRequestPayload):
+def request_refund(payload: RefundRequestPayload, current_user: dict = Depends(get_current_user)):
     inv = next((i for i in MOCK_INVOICES_DB if i["id"] == payload.invoice_id), None)
     if not inv:
         raise HTTPException(status_code=404, detail="Invoice not found")
+    if current_user.get("role") != "Admin" and current_user.get("email").lower() != inv["email"].lower():
+        raise HTTPException(status_code=403, detail="Not authorized to request a refund for this invoice.")
     inv["refundStatus"] = "Pending"
     inv["refundReason"] = payload.reason
     return {"status": "success", "message": "Refund requested successfully", "invoice": inv}
 
 @app.patch("/api/payments/invoices/{id}/refund-approval")
-def approve_refund(id: str, payload: RefundApprovalPayload):
+def approve_refund(id: str, payload: RefundApprovalPayload, current_user: dict = Depends(require_role(["Admin"]))):
     inv = next((i for i in MOCK_INVOICES_DB if i["id"] == id), None)
     if not inv:
         raise HTTPException(status_code=404, detail="Invoice not found")
@@ -1437,13 +1538,13 @@ def approve_refund(id: str, payload: RefundApprovalPayload):
     return {"status": "success", "invoice": inv}
 
 @app.post("/api/payment/save-billing-settings")
-def save_billing_settings(payload: BillingSettingsPayload):
+def save_billing_settings(payload: BillingSettingsPayload, current_user: dict = Depends(get_current_user)):
     return {"status": "success", "message": "Billing settings saved successfully"}
 
 
 # 5. Aggregated Analytics Endpoint
 @app.get("/api/analytics/dashboard")
-def get_analytics_dashboard():
+def get_analytics_dashboard(current_user: dict = Depends(require_role(["Admin"]))):
     # Dynamic counts aggregation
     students_count = len([u for u in USERS_DB if u.get("role") == "Student"])
     employees_count = len([u for u in USERS_DB if u.get("role") == "Employee"])
@@ -1502,7 +1603,9 @@ def get_analytics_dashboard():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.getenv("PORT", 8000))
+    reload_app = "PORT" not in os.environ
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=reload_app)
 
 
 

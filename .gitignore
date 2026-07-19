@@ -1,0 +1,40 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+
+# --- Virtual Environment ---
+backend/venv/
+venv/
+.venv/
+.env
+.env.*
+
+# --- ML Model & Data ---
+backend/model.pkl
+*.pkl
+*.csv
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+*.log
+
+# --- Frontend (local overrides) ---
+frontend/.next/
+frontend/node_modules/
+frontend/.env.local
+frontend/.vercel
+frontend/out/

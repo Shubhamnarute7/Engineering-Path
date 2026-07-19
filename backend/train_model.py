@@ -6,11 +6,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import joblib
 import preprocess
-import os
+from pathlib import Path
 
 def main():
-    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'PH2025_MH_MeritList_Clean.csv')
-    if not os.path.exists(csv_path):
+    base_dir = Path(__file__).resolve().parent
+    csv_path = base_dir / 'PH2025_MH_MeritList_Clean.csv'
+    if not csv_path.exists():
         print(f"Error: Dataset {csv_path} not found.")
         return
 
@@ -60,12 +61,12 @@ def main():
     full_pipeline.fit(X, y)
 
     # Save to file
-    model_dir = os.path.dirname(os.path.abspath(__file__))
-    model_filename = os.path.join(model_dir, 'model.pkl')
+    base_dir = Path(__file__).resolve().parent
+    model_filename = base_dir / 'model.pkl'
     print(f"Saving final model to {model_filename}...")
     joblib.dump(full_pipeline, model_filename)
     
-    file_size_mb = os.path.getsize(model_filename) / 1024 / 1024
+    file_size_mb = model_filename.stat().st_size / 1024 / 1024
     print(f"Successfully saved model.pkl. Size: {file_size_mb:.4f} MB")
 
 if __name__ == '__main__':

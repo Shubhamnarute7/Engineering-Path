@@ -6,7 +6,11 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 export function setCookie(name: string, value: string, days = 7) {
   if (typeof document === 'undefined') return;
   const expires = new Date(Date.now() + days * 864e5).toUTCString();
-  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax; Secure`;
+  let domainStr = '';
+  if (typeof window !== 'undefined' && window.location.hostname.endsWith('engineeringpathai.in')) {
+    domainStr = '; domain=.engineeringpathai.in';
+  }
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/${domainStr}; SameSite=Lax; Secure`;
 }
 
 export function getCookie(name: string): string | null {
@@ -74,6 +78,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
     setLoading(false);
+
+    // Global fetch interceptor to automatically append JWT bearer token
+    if (typeof window !== 'undefined') {
+      const originalFetch = window.fetch;
+      window.fetch = async function (input, init) {
+        const token = getCookie('token');
+        if (token) {
+          const apiURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+          const inputStr = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+          if (inputStr.startsWith(apiURL)) {
+            init = init || {};
+            const headers = new Headers(init.headers || {});
+            if (!headers.has('Authorization')) {
+              headers.set('Authorization', `Bearer ${token}`);
+            }
+            init.headers = headers;
+          }
+        }
+        return originalFetch.call(this, input, init);
+      };
+    }
   }, []);
 
   const login = (token: string, userData: UserSession) => {
